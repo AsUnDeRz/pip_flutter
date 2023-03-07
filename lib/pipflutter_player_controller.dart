@@ -1128,6 +1128,51 @@ class PipFlutterPlayerController {
     }
   }
 
+  Future<void>? enablePictureInPictureWithPosition(
+      {Offset? position, Size? renderSize}) async {
+    if (videoPlayerController == null) {
+      throw StateError("The data source has not been initialized");
+    }
+
+    final bool isPipSupported =
+        (await videoPlayerController!.isPictureInPictureSupported()) ?? false;
+
+    if (isPipSupported) {
+      _wasInFullScreenBeforePiP = _isFullScreen;
+      _wasControlsEnabledBeforePiP = _controlsEnabled;
+      setControlsEnabled(false);
+      if (Platform.isAndroid) {
+        _wasInFullScreenBeforePiP = _isFullScreen;
+        await videoPlayerController?.enablePictureInPicture(
+            left: 0, top: 0, width: 0, height: 0);
+        enterFullScreen();
+        _postEvent(PipFlutterPlayerEvent(PipFlutterPlayerEventType.pipStart));
+        return;
+      }
+      if (Platform.isIOS) {
+        if (position == null || renderSize == null) {
+          PipFlutterPlayerUtils.log(
+              "Can't show PiP. RenderBox is null. Did you provide valid global"
+              " key?");
+          return;
+        }
+        return videoPlayerController?.enablePictureInPicture(
+          left: position.dx,
+          top: position.dy,
+          width: renderSize.width,
+          height: renderSize.height,
+        );
+      } else {
+        PipFlutterPlayerUtils.log("Unsupported PiP in current platform.");
+      }
+    } else {
+      PipFlutterPlayerUtils.log(
+          "Picture in picture is not supported in this device. If you're "
+          "using Android, please check if you're using activity v2 "
+          "embedding.");
+    }
+  }
+
   ///Disable Picture in Picture mode if it's enabled.
   Future<void>? disablePictureInPicture() {
     if (videoPlayerController == null) {
