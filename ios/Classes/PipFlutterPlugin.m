@@ -275,7 +275,7 @@ bool _remoteCommandsInitialized = false;
 
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
+//    printf("call.method  %s\n",[(NSString *)call.method UTF8String]);
 
     if ([@"init" isEqualToString:call.method]) {
         // Allow audio playback when the Ring/Silent switch is set to silent
@@ -340,6 +340,8 @@ bool _remoteCommandsInitialized = false;
             } else {
                 result(FlutterMethodNotImplemented);
             }
+            
+            
             result(nil);
         } else if ([@"dispose" isEqualToString:call.method]) {
             [player clear];
@@ -373,8 +375,10 @@ bool _remoteCommandsInitialized = false;
             [player setVolume:[argsMap[@"volume"] doubleValue]];
             result(nil);
         } else if ([@"play" isEqualToString:call.method]) {
+            printf("call.method  %s\n",[(NSString *)call.method UTF8String]);
             [self setupRemoteNotification:player];
             [player play];
+            [player setupPipController];
             result(nil);
         } else if ([@"position" isEqualToString:call.method]) {
             result(@([player position]));
@@ -384,6 +388,7 @@ bool _remoteCommandsInitialized = false;
             [player seekTo:[argsMap[@"location"] intValue]];
             result(nil);
         } else if ([@"pause" isEqualToString:call.method]) {
+            printf("call.method  %s\n",[(NSString *)call.method UTF8String]);
             [player pause];
             result(nil);
         } else if ([@"setSpeed" isEqualToString:call.method]) {

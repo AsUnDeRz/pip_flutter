@@ -608,11 +608,29 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 }
 
 - (void)setupPipController {
+    printf("setupPipController \n");
     if (@available(iOS 9.0, *)) {
         [[AVAudioSession sharedInstance] setActive: YES error: nil];
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-        if (!_pipController && self._playerLayer && [AVPictureInPictureController isPictureInPictureSupported]) {
+        if(self._playerLayer){
+            
+        }else{
+            printf("setupPipController_playerLayer null \n");
+            // Create new controller passing reference to the AVPlayerLayer
+            self._playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+            UIViewController* vc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+            self._playerLayer.frame = CGRectMake(0.0, 0.0, 1.0, 1.0);
+            self._playerLayer.needsDisplayOnBoundsChange = YES;
+            [vc.view.layer addSublayer:self._playerLayer];
+            vc.view.layer.needsDisplayOnBoundsChange = YES;
+        }
+        if (self._playerLayer && [AVPictureInPictureController isPictureInPictureSupported]) {
             _pipController = [[AVPictureInPictureController alloc] initWithPlayerLayer:self._playerLayer];
+            if (@available(iOS 14.2, *)) {
+                _pipController.canStartPictureInPictureAutomaticallyFromInline = YES;
+                printf("setupPipController_canStartPictureInPictureAutomaticallyFromInline\n");
+            } else {
+            }
             _pipController.delegate = self;
         }
     } else {
@@ -664,12 +682,11 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 #if TARGET_OS_IOS
 - (void)pictureInPictureControllerDidStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
     [self disablePictureInPicture];
+    [[PIPActivePlayerViewControllerStorage sharedInstance] removePlayerViewController:self];
+
 }
 
 - (void)pictureInPictureControllerDidStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
-    if (_eventSink != nil) {
-        _eventSink(@{@"event" : @"pipStart"});
-    }
 }
 
 - (void)pictureInPictureControllerWillStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
@@ -677,11 +694,14 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 }
 
 - (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
-
+    [[PIPActivePlayerViewControllerStorage sharedInstance] storePlayerViewController:self];
+    if (_eventSink != nil) {
+        _eventSink(@{@"event" : @"pipStart"});
+    }
 }
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController failedToStartPictureInPictureWithError:(NSError *)error {
-
+    [[PIPActivePlayerViewControllerStorage sharedInstance] removePlayerViewController:self];
 }
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL))completionHandler {

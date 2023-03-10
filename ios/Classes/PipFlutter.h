@@ -10,6 +10,7 @@
 #import "PipFlutterTimeUtils.h"
 #import "PipFlutterView.h"
 #import "PipFlutterEzDrmAssetsLoaderDelegate.h"
+#import "PIPActivePlayerViewControllerStorage.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -56,6 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)disablePictureInPicture;
 - (int64_t)absolutePosition;
 - (int64_t) FLTCMTimeToMillis:(CMTime) time;
+- (void)setupPipController;
 
 - (void)clear;
 - (void)disposeSansEventChannel;
