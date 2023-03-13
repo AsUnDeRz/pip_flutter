@@ -377,8 +377,8 @@ bool _remoteCommandsInitialized = false;
         } else if ([@"play" isEqualToString:call.method]) {
             printf("call.method  %s\n",[(NSString *)call.method UTF8String]);
             [self setupRemoteNotification:player];
-            [player play];
             [player setupPipController];
+            [player play];
             result(nil);
         } else if ([@"position" isEqualToString:call.method]) {
             result(@([player position]));

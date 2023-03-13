@@ -7,9 +7,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Rational
+import android.graphics.Rect
 import android.util.Log
 import android.util.LongSparseArray
 import com.example.pip_flutter.PipFlutterPlayerCache.releaseCache
+import io.flutter.embedding.engine.plugins.lifecycle.HiddenLifecycleReference
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -23,6 +26,7 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.view.TextureRegistry
 import java.lang.Exception
 import java.util.HashMap
+import androidx.lifecycle.*
 
 /**
  * Android platform implementation of the VideoPlayerPlugin.
@@ -75,6 +79,11 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         Log.e("CALLMETHOD", "onAttachedToActivity: ")
         activity = binding.activity
+//        (binding.lifecycle as HiddenLifecycleReference)
+//                .lifecycle
+//                .addObserver(LifecycleEventObserver { source, event ->
+//                    Log.e("Activity state: ", event.toString())
+//                })
     }
 
     override fun onDetachedFromActivityForConfigChanges() {}
@@ -162,6 +171,7 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             }
             PLAY_METHOD -> {
                 setupNotification(player)
+                updatePictureInPictureParams()
                 player.play()
                 result.success(null)
             }
@@ -411,7 +421,7 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     private fun enablePictureInPicture(player: PipFlutterPlayer) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             player.setupMediaSession(flutterState!!.applicationContext, true)
-            activity!!.enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+            activity!!.enterPictureInPictureMode(updatePictureInPictureParams())
             startPictureInPictureListenerTimer(player)
             player.onPictureInPictureStatusChanged(true)
         }
@@ -453,6 +463,26 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             pipHandler = null
         }
         pipRunnable = null
+    }
+
+    private fun updatePictureInPictureParams(): PictureInPictureParams {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val params = PictureInPictureParams.Builder()
+                    .setAspectRatio(Rational(500,250))
+                    .setSourceRectHint(Rect(0,0,1,1))
+                    .setAutoEnterEnabled(true)
+                    .build()
+            activity?.setPictureInPictureParams(params)
+            return params
+        }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val params = PictureInPictureParams.Builder().build()
+            activity?.setPictureInPictureParams(params)
+            return params
+        }else{
+            val params = PictureInPictureParams.Builder().build()
+            activity?.setPictureInPictureParams(params)
+            return params
+        }
     }
 
     private interface KeyForAssetFn {

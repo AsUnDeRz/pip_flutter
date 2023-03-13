@@ -610,6 +610,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)setupPipController {
     printf("setupPipController \n");
     if (@available(iOS 9.0, *)) {
+        _pipController = NULL;
         [[AVAudioSession sharedInstance] setActive: YES error: nil];
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
         if(self._playerLayer){
@@ -683,18 +684,21 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)pictureInPictureControllerDidStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
     [self disablePictureInPicture];
     [[PIPActivePlayerViewControllerStorage sharedInstance] removePlayerViewController:self];
-
+    printf("pictureInPictureControllerDidStopPictureInPicture \n");
 }
 
 - (void)pictureInPictureControllerDidStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
+    printf("pictureInPictureControllerDidStartPictureInPicture \n");
+
 }
 
 - (void)pictureInPictureControllerWillStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
-
+    printf("pictureInPictureControllerWillStopPictureInPicture \n");
 }
 
 - (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
     [[PIPActivePlayerViewControllerStorage sharedInstance] storePlayerViewController:self];
+    printf("pictureInPictureControllerWillStartPictureInPicture \n");
     if (_eventSink != nil) {
         _eventSink(@{@"event" : @"pipStart"});
     }
@@ -702,10 +706,14 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController failedToStartPictureInPictureWithError:(NSError *)error {
     [[PIPActivePlayerViewControllerStorage sharedInstance] removePlayerViewController:self];
+    printf("failedToStartPictureInPictureWithError \n");
+    [self setupPipController];
+
 }
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL))completionHandler {
     [self setRestoreUserInterfaceForPIPStopCompletionHandler: true];
+    printf("restoreUserInterfaceForPictureInPictureStopWithCompletionHandler \n");
 }
 
 - (void) setAudioTrack:(NSString*) name index:(int) index{
