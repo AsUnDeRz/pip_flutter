@@ -164,6 +164,12 @@ class PipFlutterPlayerControlsConfiguration {
   ///Color of text in bottom modal sheet used for overflow menu items.
   final Color overflowModalTextColor;
 
+  ///Extra height top
+  final double extraMarginTop;
+
+  ///Extra height bottom
+  final double extraMarginBottom;
+
   const PipFlutterPlayerControlsConfiguration({
     this.controlBarColor = Colors.black87,
     this.textColor = Colors.white,
@@ -216,6 +222,8 @@ class PipFlutterPlayerControlsConfiguration {
     this.backgroundColor = Colors.black,
     this.overflowModalColor = Colors.white,
     this.overflowModalTextColor = Colors.black,
+    this.extraMarginTop = 0,
+    this.extraMarginBottom = 0,
   });
 
   factory PipFlutterPlayerControlsConfiguration.white() {

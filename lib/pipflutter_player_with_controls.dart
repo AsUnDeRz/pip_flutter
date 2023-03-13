@@ -175,7 +175,7 @@ class _PipFlutterPlayerWithControlsState
       PipFlutterPlayerTheme? playerTheme = controlsConfiguration.playerTheme;
       if (playerTheme == null) {
         if (Platform.isAndroid) {
-          playerTheme = PipFlutterPlayerTheme.material;
+          playerTheme = PipFlutterPlayerTheme.cupertino;
         } else {
           playerTheme = PipFlutterPlayerTheme.cupertino;
         }

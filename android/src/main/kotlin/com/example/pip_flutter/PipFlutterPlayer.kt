@@ -636,6 +636,9 @@ internal class PipFlutterPlayer(
             return exoPlayer.currentPosition
         }
 
+    val currentPlayer: SimpleExoPlayer?
+        get() = exoPlayer
+
     private fun sendInitialized() {
         if (isInitialized) {
             val event: MutableMap<String, Any?> = HashMap()

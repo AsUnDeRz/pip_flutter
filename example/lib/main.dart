@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pip_flutter/pipflutter_player.dart';
 import 'package:pip_flutter/pipflutter_player_configuration.dart';
 import 'package:pip_flutter/pipflutter_player_controller.dart';
+import 'package:pip_flutter/pipflutter_player_controls_configuration.dart';
 import 'package:pip_flutter/pipflutter_player_data_source.dart';
 import 'package:pip_flutter/pipflutter_player_data_source_type.dart';
 
@@ -85,15 +86,18 @@ class _PictureInPicturePageState extends State<PictureInPicturePage>
     WidgetsBinding.instance!.addObserver(this);
     PipFlutterPlayerConfiguration pipFlutterPlayerConfiguration =
         const PipFlutterPlayerConfiguration(
+            controlsConfiguration: PipFlutterPlayerControlsConfiguration(
+                extraMarginTop: 16, extraMarginBottom: 16),
             handleLifecycle: false,
             looping: true,
-            aspectRatio: 16 / 9,
-            fit: BoxFit.contain,
+            aspectRatio: 0.25,
+            fit: BoxFit.fill,
             autoPlay: true);
+    //http://1308272381.vod2.myqcloud.com/80816c4dvodth1308272381/524ff73a243791580386983072/PhLrCAICadwA.mp4
+    //http://1308272381.vod2.myqcloud.com/80816c4dvodth1308272381/7d3558b7243791580356281576/L9CRauGsq1kA.mp4
     PipFlutterPlayerDataSource dataSource = PipFlutterPlayerDataSource(
-      PipFlutterPlayerDataSourceType.network,
-      'http://1308272381.vod2.myqcloud.com/80816c4dvodth1308272381/7d3558b7243791580356281576/L9CRauGsq1kA.mp4',
-    );
+        PipFlutterPlayerDataSourceType.network,
+        'http://1308272381.vod2.myqcloud.com/80816c4dvodth1308272381/524ff73a243791580386983072/PhLrCAICadwA.mp4');
     pipFlutterPlayerController =
         PipFlutterPlayerController(pipFlutterPlayerConfiguration);
     pipFlutterPlayerController.setupDataSource(dataSource);
@@ -105,20 +109,20 @@ class _PictureInPicturePageState extends State<PictureInPicturePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Picture in Picture player"),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-            )),
-      ),
-      body: Column(
+      backgroundColor: Colors.black,
+      // appBar: AppBar(
+      //   title: const Text("Picture in Picture player"),
+      //   leading: IconButton(
+      //       onPressed: () {
+      //         Navigator.of(context).pop();
+      //       },
+      //       icon: const Icon(
+      //         Icons.arrow_back_ios,
+      //         color: Colors.white,
+      //       )),
+      // ),
+      body: Stack(
         children: [
-          const SizedBox(height: 20),
           // Flexible(
           //   flex: 1,
           //   fit: FlexFit.loose,
@@ -131,62 +135,55 @@ class _PictureInPicturePageState extends State<PictureInPicturePage>
           //   ),
           // ),
 
-          Flexible(
-            flex: 1,
-            fit: FlexFit.loose,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: PipFlutterPlayer(
-                controller: pipFlutterPlayerController,
-                key: pipFlutterPlayerKey,
-              ),
-            ),
+          PipFlutterPlayer(
+            controller: pipFlutterPlayerController,
+            key: pipFlutterPlayerKey,
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  child: Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color: Colors.pink,
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: const Center(
-                          child: Text(
-                        "Show PiP",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ))),
-                  onTap: () {
-                    pipFlutterPlayerController
-                        .enablePictureInPicture(pipFlutterPlayerKey);
-                  },
-                ),
-                InkWell(
-                  child: Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color: Colors.pink,
-                          borderRadius: BorderRadius.circular(12.0)),
-                      child: const Center(
-                          child: Text(
-                        "Disable PiP",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ))),
-                  onTap: () async {
-                    pipFlutterPlayerController.disablePictureInPicture();
-                  },
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.only(top: 20),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //     children: [
+          //       InkWell(
+          //         child: Container(
+          //             width: MediaQuery.of(context).size.width * 0.4,
+          //             padding: const EdgeInsets.all(8.0),
+          //             margin: const EdgeInsets.all(8.0),
+          //             decoration: BoxDecoration(
+          //                 color: Colors.pink,
+          //                 borderRadius: BorderRadius.circular(12.0)),
+          //             child: const Center(
+          //                 child: Text(
+          //               "Show PiP",
+          //               style: TextStyle(
+          //                   color: Colors.white, fontWeight: FontWeight.bold),
+          //             ))),
+          //         onTap: () {
+          //           pipFlutterPlayerController
+          //               .enablePictureInPicture(pipFlutterPlayerKey);
+          //         },
+          //       ),
+          //       InkWell(
+          //         child: Container(
+          //             width: MediaQuery.of(context).size.width * 0.4,
+          //             padding: const EdgeInsets.all(8.0),
+          //             margin: const EdgeInsets.all(8.0),
+          //             decoration: BoxDecoration(
+          //                 color: Colors.pink,
+          //                 borderRadius: BorderRadius.circular(12.0)),
+          //             child: const Center(
+          //                 child: Text(
+          //               "Disable PiP",
+          //               style: TextStyle(
+          //                   color: Colors.white, fontWeight: FontWeight.bold),
+          //             ))),
+          //         onTap: () async {
+          //           pipFlutterPlayerController.disablePictureInPicture();
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

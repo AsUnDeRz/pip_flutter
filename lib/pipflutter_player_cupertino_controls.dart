@@ -177,7 +177,11 @@ class _PipFlutterPlayerCupertinoControlsState
       onEnd: _onPlayerHide,
       child: Container(
         alignment: Alignment.bottomCenter,
-        margin: EdgeInsets.all(marginSize),
+        margin: EdgeInsets.only(
+            top: marginSize,
+            left: marginSize,
+            right: marginSize,
+            bottom: marginSize + _controlsConfiguration.extraMarginBottom),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
@@ -489,7 +493,7 @@ class _PipFlutterPlayerCupertinoControlsState
     return Container(
       height: barHeight,
       margin: EdgeInsets.only(
-        top: marginSize,
+        top: marginSize + _controlsConfiguration.extraMarginTop,
         right: marginSize,
         left: marginSize,
       ),
