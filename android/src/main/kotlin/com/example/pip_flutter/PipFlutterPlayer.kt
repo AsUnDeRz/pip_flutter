@@ -75,7 +75,7 @@ internal class PipFlutterPlayer(
         customDefaultLoadControl: CustomDefaultLoadControl?,
         result: MethodChannel.Result
 ) {
-    private val exoPlayer: SimpleExoPlayer?
+    val exoPlayer: SimpleExoPlayer?
     private val eventSink = QueuingEventSink()
     private val trackSelector: DefaultTrackSelector = DefaultTrackSelector(context)
     private val loadControl: LoadControl
