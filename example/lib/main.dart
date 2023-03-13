@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pip_flutter/pipflutter_player.dart';
 import 'package:pip_flutter/pipflutter_player_configuration.dart';
@@ -84,11 +86,24 @@ class _PictureInPicturePageState extends State<PictureInPicturePage>
   @override
   void initState() {
     WidgetsBinding.instance!.addObserver(this);
+    // PipFlutterPlayerConfiguration pipFlutterPlayerConfiguration =
+    //     PipFlutterPlayerConfiguration(
+    //         controlsConfiguration: const PipFlutterPlayerControlsConfiguration(
+    //             extraMarginTop: 0, extraMarginBottom: 0),
+    //         handleLifecycle: Platform.isAndroid ? true : false,
+    //         looping: true,
+    //         aspectRatio: 16 / 9,
+    //         fit: BoxFit.contain,
+    //         autoPlay: true);
+    // PipFlutterPlayerDataSource dataSource = PipFlutterPlayerDataSource(
+    //     PipFlutterPlayerDataSourceType.network,
+    //     'http://1308272381.vod2.myqcloud.com/80816c4dvodth1308272381/7d3558b7243791580356281576/L9CRauGsq1kA.mp4');
+
     PipFlutterPlayerConfiguration pipFlutterPlayerConfiguration =
-        const PipFlutterPlayerConfiguration(
-            controlsConfiguration: PipFlutterPlayerControlsConfiguration(
+        PipFlutterPlayerConfiguration(
+            controlsConfiguration: const PipFlutterPlayerControlsConfiguration(
                 extraMarginTop: 16, extraMarginBottom: 16),
-            handleLifecycle: false,
+            handleLifecycle: Platform.isAndroid ? true : false,
             looping: true,
             aspectRatio: 0.25,
             fit: BoxFit.fill,
