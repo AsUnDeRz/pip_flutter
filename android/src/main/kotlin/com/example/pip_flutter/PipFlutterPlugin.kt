@@ -543,8 +543,8 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 }else{
                     enablePictureInPicture(videoPlayers[currentNotificationTextureId])
                 }
-            }catch (e){
-
+            }catch (exception: Exception) {
+                Log.e("DefaultLifecycleObserver", "$exception")
             }
         }
     }
