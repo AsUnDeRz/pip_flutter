@@ -536,11 +536,15 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             Log.e("DefaultLifecycleObserver", "onResume:")
         }
         override fun onPause(owner: LifecycleOwner) {
-            Log.e("DefaultLifecycleObserver", "onPause:")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try{
+                Log.e("DefaultLifecycleObserver", "onPause:")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 
-            }else{
-                enablePictureInPicture(videoPlayers[currentNotificationTextureId])
+                }else{
+                    enablePictureInPicture(videoPlayers[currentNotificationTextureId])
+                }
+            }catch (e){
+
             }
         }
     }
