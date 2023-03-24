@@ -307,6 +307,10 @@ class _PipFlutterPlayerVideoFitWidgetState
 
   @override
   Widget build(BuildContext context) {
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+    bool currentOrientationLandscape =
+        currentOrientation == Orientation.landscape;
+
     if (_initialized && _started) {
       return Center(
         child: ClipRect(
@@ -314,7 +318,7 @@ class _PipFlutterPlayerVideoFitWidgetState
             width: double.infinity,
             height: double.infinity,
             child: FittedBox(
-              fit: widget.boxFit,
+              fit: currentOrientationLandscape ? BoxFit.contain : widget.boxFit,
               child: SizedBox(
                 width: controller!.value.size?.width ?? 0,
                 height: controller!.value.size?.height ?? 0,
