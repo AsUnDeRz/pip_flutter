@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -26,11 +26,11 @@ apply plugin: 'kotlin-android'
 
 android {
 
-    ext.exoPlayerVersion = "2.15.1"
+    ext.exoPlayerVersion = "2.18.1"
     ext.lifecycleVersion = "2.4.0-beta01"
     ext.annotationVersion = "1.2.0"
     ext.workVersion = "2.7.0"
-    ext.gradleVersion = "7.0.0"
+    ext.gradleVersion = "7.3.0"
     ext.kotlinVersion = "1.5.31"
 
     compileSdkVersion 33
