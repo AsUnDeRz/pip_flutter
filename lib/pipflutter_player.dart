@@ -13,7 +13,7 @@ import 'package:pip_flutter/pipflutter_player_event_type.dart';
 import 'package:pip_flutter/pipflutter_player_utils.dart';
 import 'package:pip_flutter/pipflutter_player_with_controls.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:wakelock/wakelock.dart';
 
 ///Widget which uses provided controller to render video player.
 class PipFlutterPlayer extends StatefulWidget {
@@ -112,7 +112,7 @@ class _PipFlutterPlayerState extends State<PipFlutterPlayer>
     ///full screen is on, then full screen route must be pop and return to normal
     ///state.
     if (_isFullScreen) {
-      WakelockPlus.disable();
+      Wakelock.disable();
       _navigatorState.maybePop();
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
           overlays:
@@ -255,7 +255,7 @@ class _PipFlutterPlayerState extends State<PipFlutterPlayer>
     }
 
     if (!_pipFlutterPlayerConfiguration.allowedScreenSleep) {
-      WakelockPlus.enable();
+      Wakelock.enable();
     }
 
     await Navigator.of(context, rootNavigator: true).push(route);
@@ -264,7 +264,7 @@ class _PipFlutterPlayerState extends State<PipFlutterPlayer>
 
     // The wakelock plugins checks whether it needs to perform an action internally,
     // so we do not need to check Wakelock.isEnabled.
-    WakelockPlus.disable();
+    Wakelock.disable();
 
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: _pipFlutterPlayerConfiguration.systemOverlaysAfterFullScreen);
