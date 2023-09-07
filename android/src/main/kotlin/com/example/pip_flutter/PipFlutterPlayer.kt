@@ -60,6 +60,7 @@ import com.google.android.exoplayer2.drm.DrmSessionManagerProvider
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.SelectionOverride
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.util.Util
 import java.io.File
 import java.lang.Exception
@@ -370,24 +371,21 @@ internal class PipFlutterPlayer(
     ): MediaSource {
         Log.e("buildMediaSource", "${uri}")
         Log.e("buildMediaSource", "${uri.lastPathSegment}")
-
         val type: Int
         if (formatHint == null) {
             var lastPathSegment = uri.lastPathSegment
             if (lastPathSegment == null) {
                 lastPathSegment = ""
             }
-            type = Util.inferContentType(lastPathSegment)
-            Log.e("buildMediaSource formatHint == null", "${type}")
+            type = Util.inferContentTypeForExtension(lastPathSegment)
         } else {
             type = when (formatHint) {
-                FORMAT_SS -> C.TYPE_SS
-                FORMAT_DASH -> C.TYPE_DASH
-                FORMAT_HLS -> C.TYPE_HLS
-                FORMAT_OTHER -> C.TYPE_OTHER
+                FORMAT_SS -> C.CONTENT_TYPE_SS
+                FORMAT_DASH -> C.CONTENT_TYPE_DASH
+                FORMAT_HLS -> C.CONTENT_TYPE_HLS
+                FORMAT_OTHER -> C.CONTENT_TYPE_OTHER
                 else -> -1
             }
-            Log.e("buildMediaSource formatHint != null", "${type}")
         }
         val mediaItemBuilder = MediaItem.Builder()
         mediaItemBuilder.setUri(uri)
@@ -396,31 +394,41 @@ internal class PipFlutterPlayer(
         }
         val mediaItem = mediaItemBuilder.build()
         var drmSessionManagerProvider: DrmSessionManagerProvider? = null
-        if (drmSessionManager != null) {
-            drmSessionManagerProvider = DrmSessionManagerProvider { drmSessionManager!! }
+        drmSessionManager?.let { drmSessionManager ->
+            drmSessionManagerProvider = DrmSessionManagerProvider { drmSessionManager }
         }
+
         return when (type) {
-            C.TYPE_SS -> SsMediaSource.Factory(
-                    DefaultSsChunkSource.Factory(mediaDataSourceFactory),
-                    DefaultDataSourceFactory(context, null, mediaDataSourceFactory)
-            )
-                    .setDrmSessionManagerProvider(drmSessionManagerProvider)
-                    .createMediaSource(mediaItem)
-            C.TYPE_DASH -> DashMediaSource.Factory(
-                    DefaultDashChunkSource.Factory(mediaDataSourceFactory),
-                    DefaultDataSourceFactory(context, null, mediaDataSourceFactory)
-            )
-                    .setDrmSessionManagerProvider(drmSessionManagerProvider)
-                    .createMediaSource(mediaItem)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
-                    .setDrmSessionManagerProvider(drmSessionManagerProvider)
-                    .createMediaSource(mediaItem)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(
-                    mediaDataSourceFactory,
-                    DefaultExtractorsFactory()
-            )
-                    .setDrmSessionManagerProvider(drmSessionManagerProvider)
-                    .createMediaSource(mediaItem)
+            C.CONTENT_TYPE_SS -> SsMediaSource.Factory(
+                DefaultSsChunkSource.Factory(mediaDataSourceFactory),
+                DefaultDataSource.Factory(context, mediaDataSourceFactory)
+            ).apply {
+                if (drmSessionManagerProvider != null) {
+                    setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                }
+            }.createMediaSource(mediaItem)
+            C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(
+                DefaultDashChunkSource.Factory(mediaDataSourceFactory),
+                DefaultDataSource.Factory(context, mediaDataSourceFactory)
+            ).apply {
+                if (drmSessionManagerProvider != null) {
+                    setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                }
+            }.createMediaSource(mediaItem)
+            C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
+                .apply {
+                    if (drmSessionManagerProvider != null) {
+                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    }
+                }.createMediaSource(mediaItem)
+            C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(
+                mediaDataSourceFactory,
+                DefaultExtractorsFactory()
+            ).apply {
+                if (drmSessionManagerProvider != null) {
+                    setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                }
+            }.createMediaSource(mediaItem)
             else -> {
                 throw IllegalStateException("Unsupported type: $type")
             }

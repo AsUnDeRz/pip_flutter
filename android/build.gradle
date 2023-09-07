@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 
 android {
 
-    ext.exoPlayerVersion = "2.16.1"
+    ext.exoPlayerVersion = "2.18.1"
     ext.lifecycleVersion = "2.4.0-beta01"
     ext.annotationVersion = "1.2.0"
     ext.workVersion = "2.7.0"
