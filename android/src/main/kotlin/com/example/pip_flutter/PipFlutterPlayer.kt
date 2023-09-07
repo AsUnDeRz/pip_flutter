@@ -456,10 +456,10 @@ internal class PipFlutterPlayer(
             Log.e("buildMediaSource formatHint == null", "${type}")
         } else {
             type = when (formatHint) {
-                FORMAT_SS -> C.CONTENT_TYPE_SS
-                FORMAT_DASH -> C.CONTENT_TYPE_DASH
-                FORMAT_HLS -> C.CONTENT_TYPE_HLS
-                FORMAT_OTHER -> C.CONTENT_TYPE_OTHER
+                FORMAT_SS -> C.TYPE_SS
+                FORMAT_DASH -> C.TYPE_DASH
+                FORMAT_HLS -> C.TYPE_HLS
+                FORMAT_OTHER -> C.TYPE_OTHER
                 else -> -1
             }
             Log.e("buildMediaSource formatHint != null", "${type}")
@@ -475,22 +475,22 @@ internal class PipFlutterPlayer(
             drmSessionManagerProvider = DrmSessionManagerProvider { drmSessionManager!! }
         }
         return when (type) {
-            C.CONTENT_TYPE_SS -> SsMediaSource.Factory(
+            C.TYPE_SS -> SsMediaSource.Factory(
                 DefaultSsChunkSource.Factory(mediaDataSourceFactory),
                 DefaultDataSourceFactory(context, null, mediaDataSourceFactory)
             )
                 .setDrmSessionManagerProvider(drmSessionManagerProvider)
                 .createMediaSource(mediaItem)
-            C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(
+            C.TYPE_DASH -> DashMediaSource.Factory(
                 DefaultDashChunkSource.Factory(mediaDataSourceFactory),
                 DefaultDataSourceFactory(context, null, mediaDataSourceFactory)
             )
                 .setDrmSessionManagerProvider(drmSessionManagerProvider)
                 .createMediaSource(mediaItem)
-            C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
+            C.TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
                 .setDrmSessionManagerProvider(drmSessionManagerProvider)
                 .createMediaSource(mediaItem)
-            C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(
                 mediaDataSourceFactory,
                 DefaultExtractorsFactory()
             )
