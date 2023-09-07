@@ -478,6 +478,8 @@ class PipFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Log.e("CALLMETHOD", "updatePictureInPictureParams: S")
+//            val params = PictureInPictureParams.Builder().build()
+//            activity?.setPictureInPictureParams(params)
             val params = PictureInPictureParams.Builder()
                     .setAspectRatio(Rational(width,height))
                     .setSourceRectHint(Rect(0,0,1,1))
