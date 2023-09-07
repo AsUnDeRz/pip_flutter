@@ -80,7 +80,7 @@ internal class PipFlutterPlayer(
     private val trackSelector: DefaultTrackSelector = DefaultTrackSelector(context)
     private val loadControl: LoadControl
     private var isInitialized = false
-    private var surface: Surface? = null
+    public var surface: Surface? = null
     private var key: String? = null
     private var playerNotificationManager: PlayerNotificationManager? = null
     private var refreshHandler: Handler? = null
