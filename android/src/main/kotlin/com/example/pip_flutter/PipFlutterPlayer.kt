@@ -443,6 +443,9 @@ internal class PipFlutterPlayer(
         cacheKey: String?,
         context: Context
     ): MediaSource {
+        Log.e("buildMediaSource", "${uri}")
+        Log.e("buildMediaSource", "${uri.lastPathSegment}")
+
         val type: Int
         if (formatHint == null) {
             var lastPathSegment = uri.lastPathSegment
@@ -450,6 +453,7 @@ internal class PipFlutterPlayer(
                 lastPathSegment = ""
             }
             type = Util.inferContentType(lastPathSegment)
+            Log.e("buildMediaSource formatHint == null", "${type}")
         } else {
             type = when (formatHint) {
                 FORMAT_SS -> C.CONTENT_TYPE_SS
@@ -458,6 +462,7 @@ internal class PipFlutterPlayer(
                 FORMAT_OTHER -> C.CONTENT_TYPE_OTHER
                 else -> -1
             }
+            Log.e("buildMediaSource formatHint != null", "${type}")
         }
         val mediaItemBuilder = MediaItem.Builder()
         mediaItemBuilder.setUri(uri)
